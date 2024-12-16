@@ -13,8 +13,8 @@ class Grid:
     def print_grid(self):
         # shows up the grid state
         for row in range(self.num_rows):
-            for column in range(self.num_cols):
-                print(self.grid[row][column], end=" ")
+            for col in range(self.num_cols):
+                print(self.grid[row][col], end=" ")
             print()
 
     def get_cell_colors(self):

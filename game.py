@@ -2,6 +2,7 @@ import sys
 import pygame
 from graphics import color_palette
 from grid import Grid
+from blocks import *
 
 # Config
 pygame.init()
@@ -13,8 +14,7 @@ clock = pygame.time.Clock()
 
 game_grid = Grid()
 
-game_grid.grid[0][0] = 1
-game_grid.grid[0][1] = 2
+block = LBlock()
 game_grid.print_grid()
 
 # Main Loop
@@ -27,6 +27,7 @@ while True:
         # Drawing Grid
         screen.fill(color_palette["Deep Ocean Blue"])
         game_grid.draw(screen)
+        block.draw(screen)
 
         pygame.display.update()
         clock.tick(60)
