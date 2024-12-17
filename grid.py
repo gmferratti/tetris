@@ -17,6 +17,9 @@ class Grid:
                 print(self.grid[row][col], end=" ")
             print()
 
+    def is_inside(self, row, col):
+        return 0 <= row < self.num_rows and 0 <= col < self.num_cols
+
     def get_cell_colors(self):
         rgb_values = [rgb for rgb in color_palette.values()]
         return rgb_values

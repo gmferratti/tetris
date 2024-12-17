@@ -1,44 +1,59 @@
-import sys
-import pygame
-from graphics import color_palette
 from grid import Grid
 from blocks import *
+import random
 
-# Config
-pygame.init()
-pygame.mixer.init()
+class Game:
+    def __init__(self):
+        self.grid = Grid()
+        self.blocks = [
+            IBlock(),
+            JBlock(),
+            LBlock(),
+            OBlock(),
+            SBlock(),
+            TBlock(),
+            ZBlock()
+        ]
+        self.current_block = self.get_random_block()
+        self.next_block = self.get_random_block()
 
-# Sound
-pygame.mixer.music.load("bgm/main_theme.mp3")
-pygame.mixer.music.set_volume(0.5)
-pygame.mixer.music.play(-1)
+    def get_random_block(self):
+        if len(self.blocks) == 0:
+            self.blocks = [
+                IBlock(),
+                JBlock(),
+                LBlock(),
+                OBlock(),
+                SBlock(),
+                TBlock(),
+                ZBlock()
+            ]
+        block = random.choice(self.blocks)
+        self.blocks.remove(block)
+        return block
+    
+    def move_left(self):
+        self.current_block.move(0, -1)
+        if self.is_block_inside_grid() == False:
+            self.current_block.move(0, 1)
 
-# Screen
-screen = pygame.display.set_mode((300, 600))
-pygame.display.set_caption("Python Tetris 3000")
+    def move_right(self):
+        self.current_block.move(0, 1)
+        if self.is_block_inside_grid() == False:
+            self.current_block.move(0, -1)
 
-# Clock
-clock = pygame.time.Clock()
+    def move_down(self):
+        self.current_block.move(1, 0)
+        if self.is_block_inside_grid() == False:
+            self.current_block.move(-1, 0)
 
-# Grid
-game_grid = Grid()
-block = IBlock()
-game_grid.print_grid()
+    def is_block_inside_grid(self):
+        tiles = self.current_block.get_cell_positions()
+        for tile in tiles:
+            if self.grid.is_inside(tile.row, tile.col) == False:
+                return False
+            return True
 
-# Main Loop
-game_over = False
-while not game_over:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-            pygame.mixer.music.stop()
-            game_over = True
-        
-        # Drawing Grid
-        screen.fill(color_palette["BG"])
-        game_grid.draw(screen)
-        block.draw(screen)
-
-        pygame.display.update()
-        clock.tick(60)
+    def draw(self, screen):
+        self.grid.draw(screen)
+        self.current_block.draw(screen)
