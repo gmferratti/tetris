@@ -82,3 +82,11 @@ class Block:
                 self.colors[self.id],  # Color based on block ID
                 tile_rect
             )
+
+    def rotate(self):
+        """
+        Rotates the block by updating its rotation state.
+        """
+        self.rotation_state = self.rotation_state + 1
+        if self.rotation_state >= len(self.cells):
+            self.rotation_state = 0

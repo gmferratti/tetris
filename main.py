@@ -23,7 +23,15 @@ game = Game()
 
 # Main Loop
 game_over = False
+
+# Drop interval in miliseconds
+drop_interval = 500
+drop_timer = 0
+
 while not game_over:
+    dt = clock.tick(60)
+    drop_timer += dt
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -38,12 +46,26 @@ while not game_over:
             if event.key == pygame.K_DOWN:
                 game.move_down()
             if event.key == pygame.K_SPACE:
+                game.rotate()
+            if event.key == pygame.K_UP:
                 pass
-                #game.rotate()
-        
-        # Drawing Grid
-        screen.fill(color_palette["BG"])
-        game.draw(screen)
+    
+    # Check for key presses to allow continuous movement
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT]:
+        game.move_left()
+    if keys[pygame.K_RIGHT]:
+        game.move_right()
+    if keys[pygame.K_DOWN]:
+        game.move_down()   
 
-        pygame.display.update()
-        clock.tick(60)
+    # automatic drop movement
+    if drop_timer >= drop_interval:
+        game.move_down()
+        drop_timer = 0
+
+    # Drawing Grid
+    screen.fill(color_palette["BG"])
+    game.draw(screen)
+
+    pygame.display.update()

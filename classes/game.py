@@ -72,6 +72,13 @@ class Game:
         self.current_block.move(1, 0)  # Move down
         if not self.is_block_inside_grid():  # Undo if out of bounds
             self.current_block.move(-1, 0)
+    
+    def rotate(self):
+        """
+        Rotates the current block clockwise. If the rotation results in the block 
+        being outside the grid, it is undone.
+        """
+        self.current_block.rotate()
 
     def is_block_inside_grid(self):
         """
