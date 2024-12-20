@@ -45,10 +45,11 @@ while not game_over:
                 game.move_right()
             if event.key == pygame.K_DOWN:
                 game.move_down()
-            if event.key == pygame.K_SPACE:
-                game.rotate()
             if event.key == pygame.K_UP:
                 pass
+            if event.key == pygame.K_SPACE:
+                game.rotate()
+                
     
     # Check for key presses to allow continuous movement
     keys = pygame.key.get_pressed()

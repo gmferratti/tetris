@@ -1,6 +1,8 @@
 from classes.grid import Grid
 from classes.blocks import *
 import random
+import pygame
+import sys
 
 class Game:
     """
@@ -51,27 +53,28 @@ class Game:
         Moves the current block one step to the left. If the move results in 
         the block being outside the grid, it is undone.
         """
-        self.current_block.move(0, -1)  # Move left
-        if not self.is_block_inside_grid():  # Undo if out of bounds
-            self.current_block.move(0, 1)
+        if self.can_move_block(self.current_block, 0, -1):
+            self.current_block.move(0, -1)
 
     def move_right(self):
         """
         Moves the current block one step to the right. If the move results in 
         the block being outside the grid, it is undone.
         """
-        self.current_block.move(0, 1)  # Move right
-        if not self.is_block_inside_grid():  # Undo if out of bounds
-            self.current_block.move(0, -1)
+        if self.can_move_block(self.current_block, 0, 1):
+            self.current_block.move(0, 1)
 
     def move_down(self):
         """
         Moves the current block one step downward. If the move results in 
         the block being outside the grid, it is undone.
         """
-        self.current_block.move(1, 0)  # Move down
-        if not self.is_block_inside_grid():  # Undo if out of bounds
-            self.current_block.move(-1, 0)
+        if self.can_move_block(self.current_block, 1, 0):
+            self.current_block.move(1, 0)
+        else:
+            # If the block cannot move down, it has landed
+            self.lock_block()
+            self.spawn_new_block()
     
     def rotate(self):
         """
@@ -79,6 +82,8 @@ class Game:
         being outside the grid, it is undone.
         """
         self.current_block.rotate()
+
+    
 
     def is_block_inside_grid(self):
         """
@@ -92,6 +97,34 @@ class Game:
             if not self.grid.is_inside(tile.row, tile.col):  # Check each tile's position
                 return False
         return True
+    
+    def can_move_block(self, block, row_offset, col_offset):
+        """
+        Checks if the current block can move to a new position.
+
+        Args:
+            block (Block): The block to check.
+            row_offset (int): The row offset to apply.
+            col_offset (int): The column offset to apply.
+
+        Returns:
+            bool: True if the block can move, False otherwise.
+        """
+        for cell in block.get_cell_positions():
+            # Calculate the new position of each cell after the offset
+            new_row = cell.row + row_offset
+            new_col = cell.col + col_offset
+
+            # Check if the new position is outside the grid boundaries
+            if not self.grid.is_inside(new_row, new_col):
+                return False
+
+            # Check if the new position collides with an occupied cell in the grid
+            if self.grid.grid[new_row][new_col] != 0:
+                return False
+
+        return True
+
 
     def draw(self, screen):
         """
@@ -102,3 +135,28 @@ class Game:
         """
         self.grid.draw(screen)  # Draw the grid
         self.current_block.draw(screen)  # Draw the current block
+
+    def lock_block(self):
+        """
+        Locks the current block into the grid and updates the grid state.
+        """
+        for cell in self.current_block.get_cell_positions():
+            self.grid.grid[cell.row][cell.col] = self.current_block.id
+    
+    def spawn_new_block(self):
+        """
+        Spawns a new block at the top of the grid. If the new block collides immediately,
+        the game is over.
+        """
+        self.current_block = self.next_block
+        self.next_block = self.get_random_block()
+        if not self.can_move_block(self.current_block, 0, 0):
+            self.game_over()
+
+    def game_over(self):
+        """
+        Handles the game-over state.
+        """
+        print("Game Over!")
+        pygame.quit()
+        sys.exit()

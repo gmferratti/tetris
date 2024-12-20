@@ -47,6 +47,23 @@ class Grid:
         """
         return 0 <= row < self.num_rows and 0 <= col < self.num_cols
 
+    def is_cell_empty(self, row, col):
+        """
+        Checks if a given cell in the grid is empty (0) and within boundaries.
+
+        Args:
+            row (int): The row index of the cell.
+            col (int): The column index of the cell.
+
+        Returns:
+            bool: True if the cell is empty and within grid boundaries, False otherwise.
+        """
+        # Ensure the cell is within the grid boundaries
+        if not self.is_inside(row, col):
+            return False
+        # Check if the cell is empty
+        return self.grid[row][col] == 0
+
     def get_cell_colors(self):
         """
         Retrieves the list of RGB values for the grid cells from the color palette.
