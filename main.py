@@ -1,7 +1,7 @@
 import sys
 import pygame
-from graphics import color_palette
-from game import Game
+from classes.graphics import color_palette
+from classes.game import Game
 
 # Config
 pygame.init()
